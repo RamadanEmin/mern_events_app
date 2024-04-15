@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { eventFormSchema } from "@/lib/validator"
 import * as z from 'zod';
 import { eventDefaultValues } from '@/constants';
 
@@ -22,12 +23,12 @@ type EventFormProps = {
 const EventForm = ({ userId, type }: EventFormProps) => {
     const initialValues = eventDefaultValues;
 
-    const form = useForm<z.infer>({
+    const form = useForm<z.infer<typeof eventFormSchema>>({
         resolver: zodResolver(eventFormSchema),
         defaultValues: initialValues
     });
 
-    async function onSubmit(values: z.infer) {
+    async function onSubmit(values: z.infer<typeof eventFormSchema>) {
 
     }
 
