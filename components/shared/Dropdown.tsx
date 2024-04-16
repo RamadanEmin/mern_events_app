@@ -13,6 +13,7 @@ import {
     AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { Input } from '../ui/input';
+import { createCategory } from '@/lib/actions/category.actions';
 
 type DropdownProps = {
     value?: string
@@ -24,8 +25,13 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
     const [newCategory, setNewCategory] = useState('');
 
     const handleAddCategory = () => {
-
-    };
+        createCategory({
+            categoryName: newCategory.trim()
+        })
+            .then((category) => {
+                setCategories((prevState) => [...prevState, category])
+            });
+    }
 
     return (
         <Select onValueChange={onChangeHandler} defaultValue={value}>
