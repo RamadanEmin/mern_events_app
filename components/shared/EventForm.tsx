@@ -1,12 +1,17 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { eventFormSchema } from "@/lib/validator"
+import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { eventFormSchema } from "@/lib/validator"
 import { eventDefaultValues } from '@/constants';
+import { Input } from '@/components/ui/input';
+import Dropdown from './Dropdown';
+import { useUploadThing } from '@/lib/uploadthing';
+import { createEvent } from '@/lib/actions/event.actions';
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -21,7 +26,11 @@ type EventFormProps = {
 }
 
 const EventForm = ({ userId, type }: EventFormProps) => {
+    const [files, setFiles] = useState<File[]>([]);
     const initialValues = eventDefaultValues;
+    const router = useRouter();
+
+    const { startUpload } = useUploadThing('imageUploader');
 
     const form = useForm<z.infer<typeof eventFormSchema>>({
         resolver: zodResolver(eventFormSchema),
@@ -29,7 +38,34 @@ const EventForm = ({ userId, type }: EventFormProps) => {
     });
 
     async function onSubmit(values: z.infer<typeof eventFormSchema>) {
+        let uploadedImageUrl = values.imageUrl;
 
+        if (files.length > 0) {
+            const uploadedImages = await startUpload(files);
+
+            if (!uploadedImages) {
+                return;
+            }
+
+            uploadedImageUrl = uploadedImages[0].url;
+        }
+
+        if (type === 'Create') {
+            try {
+                const newEvent = await createEvent({
+                    event: { ...values, imageUrl: uploadedImageUrl },
+                    userId,
+                    path: '/profile'
+                })
+
+                if (newEvent) {
+                    form.reset();
+                    router.push(`/events/${newEvent._id}`);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 
     return (
@@ -54,6 +90,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                         render={({ field }) => (
                             <FormItem className="w-full">
                                 <FormControl>
+                                    <Dropdown onChangeHandler={field.onChange} value={field.value} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
