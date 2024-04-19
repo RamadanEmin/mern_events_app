@@ -18,6 +18,7 @@ import { FileUploader } from './FileUploader';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Checkbox } from '../ui/checkbox';
+import { Button } from '@/components/ui/button';
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -236,7 +237,11 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                                             height={24}
                                             className="filter-grey"
                                         />
-                                        <Input type="number" placeholder="Price" {...field} className="p-regular-16 border-0 bg-grey-50 outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                        <Input
+                                            type="number"
+                                            placeholder="Price"
+                                            {...field} className="p-regular-16 border-0 bg-grey-50 outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                        />
                                         <FormField
                                             control={form.control}
                                             name="isFree"
@@ -244,20 +249,20 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                                                 <FormItem>
                                                     <FormControl>
                                                         <div className="flex items-center">
-                                                            <label htmlFor="isFree" className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Free Ticket</label>
+                                                            <label htmlFor="isFree" className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                                Free Ticket
+                                                            </label>
                                                             <Checkbox
                                                                 onCheckedChange={field.onChange}
                                                                 checked={field.value}
                                                                 id="isFree" className="mr-2 h-5 w-5 border-2 border-primary-500" />
                                                         </div>
-
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
                                     </div>
-
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -286,6 +291,19 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                         )}
                     />
                 </div>
+
+                <Button
+                    type="submit"
+                    size="lg"
+                    disabled={form.formState.isSubmitting}
+                    className="button col-span-2 w-full"
+                >
+                    {form.formState.isSubmitting
+                        ? (
+                            'Submitting...'
+                        ) : `${type} Event `
+                    }
+                </Button>
             </form>
         </Form>
     );
