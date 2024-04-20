@@ -20,13 +20,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Checkbox } from '../ui/checkbox';
 import { Button } from '@/components/ui/button';
 
-const formSchema = z.object({
-    username: z.string().min(2, {
-        message: 'Username must be at least 2 characters.',
-    })
-});
-
-
 type EventFormProps = {
     userId: string
     type: "Create" | "Update"
