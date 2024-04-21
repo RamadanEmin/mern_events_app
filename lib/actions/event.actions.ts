@@ -8,7 +8,7 @@ import User from '@/lib/database/models/user.model';
 import Category from '@/lib/database/models/category.model';
 import { handleError } from '@/lib/utils';
 
-import { CreateEventParams, GetAllEventsParams, } from '@/types';
+import { CreateEventParams, DeleteEventParams, GetAllEventsParams } from '@/types';
 
 const getCategoryByName = async (name: string) => {
     return Category.findOne({ name: { $regex: name, $options: 'i' } });
@@ -47,6 +47,17 @@ export async function getEventById(eventId: string) {
         if (!event) throw new Error('Event not found');
 
         return JSON.parse(JSON.stringify(event));
+    } catch (error) {
+        handleError(error);
+    }
+}
+
+export async function deleteEvent({ eventId, path }: DeleteEventParams) {
+    try {
+        await connectToDatabase();
+
+        const deletedEvent = await Event.findByIdAndDelete(eventId);
+        if (deletedEvent) revalidatePath(path);
     } catch (error) {
         handleError(error);
     }

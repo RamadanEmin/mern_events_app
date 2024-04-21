@@ -33,6 +33,11 @@ export type CreateEventParams = {
     path: string
 }
 
+export type DeleteEventParams = {
+    eventId: string
+    path: string
+}
+
 export type GetAllEventsParams = {
     query: string
     category: string
