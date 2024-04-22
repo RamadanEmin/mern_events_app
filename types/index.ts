@@ -63,6 +63,13 @@ export type GetAllEventsParams = {
     page: number
 }
 
+export type GetRelatedEventsByCategoryParams = {
+    categoryId: string
+    eventId: string
+    limit?: number
+    page: number | string
+}
+
 export type Event = {
     _id: string
     title: string
