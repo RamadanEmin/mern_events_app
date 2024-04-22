@@ -8,7 +8,7 @@ import User from '@/lib/database/models/user.model';
 import Category from '@/lib/database/models/category.model';
 import { handleError } from '@/lib/utils';
 
-import { CreateEventParams, DeleteEventParams, GetAllEventsParams } from '@/types';
+import { CreateEventParams, UpdateEventParams, DeleteEventParams, GetAllEventsParams } from '@/types';
 
 const getCategoryByName = async (name: string) => {
     return Category.findOne({ name: { $regex: name, $options: 'i' } });
@@ -52,12 +52,37 @@ export async function getEventById(eventId: string) {
     }
 }
 
+export async function updateEvent({ userId, event, path }: UpdateEventParams) {
+    try {
+        await connectToDatabase();
+
+        const eventToUpdate = await Event.findById(event._id);
+        if (!eventToUpdate || eventToUpdate.organizer.toHexString() !== userId) {
+            throw new Error('Unauthorized or event not found');
+        }
+
+        const updatedEvent = await Event.findByIdAndUpdate(
+            event._id,
+            { ...event, category: event.categoryId },
+            { new: true }
+        )
+        revalidatePath(path);
+
+        return JSON.parse(JSON.stringify(updatedEvent));
+    } catch (error) {
+        handleError(error);
+    }
+}
+
 export async function deleteEvent({ eventId, path }: DeleteEventParams) {
     try {
         await connectToDatabase();
 
         const deletedEvent = await Event.findByIdAndDelete(eventId);
-        if (deletedEvent) revalidatePath(path);
+
+        if (deletedEvent) {
+            revalidatePath(path);
+        }
     } catch (error) {
         handleError(error);
     }
