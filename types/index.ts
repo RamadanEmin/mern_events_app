@@ -63,6 +63,12 @@ export type GetAllEventsParams = {
     page: number
 }
 
+export type GetEventsByUserParams = {
+    userId: string
+    limit?: number
+    page: number
+}
+
 export type GetRelatedEventsByCategoryParams = {
     categoryId: string
     eventId: string
@@ -104,6 +110,14 @@ export type CheckoutOrderParams = {
     price: string
     isFree: boolean
     buyerId: string
+}
+
+export type CreateOrderParams = {
+    stripeId: string
+    eventId: string
+    buyerId: string
+    totalAmount: string
+    createdAt: Date
 }
 
 // URL QUERY PARAMS
