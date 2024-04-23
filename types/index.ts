@@ -97,7 +97,16 @@ export type CreateCategoryParams = {
     categoryName: string
 }
 
-// ====== URL QUERY PARAMS
+// ORDER PARAMS
+export type CheckoutOrderParams = {
+    eventTitle: string
+    eventId: string
+    price: string
+    isFree: boolean
+    buyerId: string
+}
+
+// URL QUERY PARAMS
 export type SearchParamProps = {
     params: { id: string }
     searchParams: { [key: string]: string | string[] | undefined }
