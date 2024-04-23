@@ -120,6 +120,12 @@ export type CreateOrderParams = {
     createdAt: Date
 }
 
+export type GetOrdersByUserParams = {
+    userId: string | null
+    limit?: number
+    page: string | number | null
+}
+
 // URL QUERY PARAMS
 export type SearchParamProps = {
     params: { id: string }
